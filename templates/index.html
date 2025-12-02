@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Recipe Discovery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'food-orange': '#FF6B35',
+                        'food-red': '#F7931E',
+                        'warm-gray': '#F8F9FA'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+
+<body class="bg-gradient-to-br from-orange-50 via-white to-amber-50 min-h-screen">
+  {% include  'navbar.html' %}
+
+    <!-- Hero Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+            <!-- Left Content -->
+            <div class="space-y-8">
+                <div class="space-y-4">
+                    <h1 class="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                        Recipe 
+                        <span class="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
+                            Generation 
+                        </span>
+                        from Food Images
+                    </h1>
+                    <p class="text-xl text-gray-600 leading-relaxed">
+                        Upload an image of food and get instant recipes with ingredients. 
+                        Turn any dish into a culinary adventure with our AI-powered recipe discovery.
+                    </p>
+                </div>
+
+                <!-- CTA Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="{{ url_for('predict') }}" class="group bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-4 rounded-full font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 inline-flex items-center justify-center">
+                        <i class="fas fa-camera mr-2 group-hover:animate-pulse"></i>
+                        Try It Now
+                    </a>
+                    <button class="border-2 border-orange-500 text-orange-500 px-8 py-4 rounded-full font-semibold text-lg hover:bg-orange-500 hover:text-white transition-all duration-300">
+                        <i class="fas fa-play mr-2"></i>
+                        Watch Demo
+                    </button>
+                </div>
+
+                <!-- Stats -->
+                <div class="grid grid-cols-3 gap-8 pt-8 border-t border-gray-200">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-orange-500">10K+</div>
+                        <div class="text-sm text-gray-600 mt-1">Recipes Generated</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-orange-500">80%</div>
+                        <div class="text-sm text-gray-600 mt-1">Accuracy Rate</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-orange-500">5K+</div>
+                        <div class="text-sm text-gray-600 mt-1">Happy Users</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Image -->
+            <div class="relative">
+                <div class="absolute inset-0 bg-gradient-to-r from-orange-400 to-red-400 rounded-3xl transform rotate-3 opacity-20"></div>
+                <div class="relative bg-white rounded-3xl shadow-2xl p-8 transform hover:rotate-1 transition-transform duration-500">
+                    <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                         alt="Delicious Food" 
+                         class="w-full h-80 object-cover rounded-2xl">
+                    <div class="absolute -top-4 -right-4 bg-orange-500 text-white rounded-full p-4 shadow-lg animate-bounce">
+                        <i class="fas fa-magic text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works Section -->
+    <div class="bg-white/50 backdrop-blur-sm py-20 mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Transform any food photo into a complete recipe in just three simple steps
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Step 1 -->
+                <div class="group">
+                    <div class="bg-white rounded-2xl shadow-xl p-8 h-full transform group-hover:-translate-y-2 transition-all duration-300 border border-gray-100">
+                        <div class="text-center">
+                            <div class="relative inline-block mb-6">
+                                <div class="bg-gradient-to-r from-orange-500 to-red-500 w-20 h-20 rounded-full flex items-center justify-center mx-auto shadow-lg">
+                                    <i class="fas fa-camera text-white text-2xl"></i>
+                                </div>
+                                <div class="absolute -top-2 -right-2 bg-orange-100 text-orange-600 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">
+                                    1
+                                </div>
+                            </div>
+                            <h5 class="text-xl font-bold text-gray-900 mb-3">Upload Image</h5>
+                            <p class="text-gray-600 leading-relaxed">
+                                Take or upload a clear photo of your food. Our AI works with any cuisine or dish type.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="group">
+                    <div class="bg-white rounded-2xl shadow-xl p-8 h-full transform group-hover:-translate-y-2 transition-all duration-300 border border-gray-100">
+                        <div class="text-center">
+                            <div class="relative inline-block mb-6">
+                                <div class="bg-gradient-to-r from-orange-500 to-red-500 w-20 h-20 rounded-full flex items-center justify-center mx-auto shadow-lg">
+                                    <i class="fas fa-brain text-white text-2xl"></i>
+                                </div>
+                                <div class="absolute -top-2 -right-2 bg-orange-100 text-orange-600 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">
+                                    2
+                                </div>
+                            </div>
+                            <h5 class="text-xl font-bold text-gray-900 mb-3">AI Recognition</h5>
+                            <p class="text-gray-600 leading-relaxed">
+                                Our advanced AI identifies the food, ingredients, and cooking methods with remarkable accuracy.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="group">
+                    <div class="bg-white rounded-2xl shadow-xl p-8 h-full transform group-hover:-translate-y-2 transition-all duration-300 border border-gray-100">
+                        <div class="text-center">
+                            <div class="relative inline-block mb-6">
+                                <div class="bg-gradient-to-r from-orange-500 to-red-500 w-20 h-20 rounded-full flex items-center justify-center mx-auto shadow-lg">
+                                    <i class="fas fa-utensils text-white text-2xl"></i>
+                                </div>
+                                <div class="absolute -top-2 -right-2 bg-orange-100 text-orange-600 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">
+                                    3
+                                </div>
+                            </div>
+                            <h5 class="text-xl font-bold text-gray-900 mb-3">Get Recipe</h5>
+                            <p class="text-gray-600 leading-relaxed">
+                                Receive a complete recipe with ingredients, instructions, and nutritional information.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div  id="features" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Why Choose Inverse Cooking?</h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Powered by cutting-edge AI technology to make cooking accessible and fun for everyone
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="text-center group">
+                    <div class="bg-orange-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-500 transition-colors duration-300">
+                        <i class="fas fa-lightning-bolt text-orange-500 text-xl group-hover:text-white"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold text-gray-900 mb-2">Instant Results</h4>
+                    <p class="text-gray-600 text-sm">Get recipes in seconds, not hours of searching</p>
+                </div>
+
+                <div class="text-center group">
+                    <div class="bg-orange-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-500 transition-colors duration-300">
+                        <i class="fas fa-globe text-orange-500 text-xl group-hover:text-white"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold text-gray-900 mb-2">Global Cuisines</h4>
+                    <p class="text-gray-600 text-sm">Recognize dishes from cuisines worldwide</p>
+                </div>
+
+                <!-- <div class="text-center group">
+                    <div class="bg-orange-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-500 transition-colors duration-300">
+                        <i class="fas fa-heart text-orange-500 text-xl group-hover:text-white"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold text-gray-900 mb-2">Nutritional Info</h4>
+                    <p class="text-gray-600 text-sm">Complete nutritional breakdown for healthy eating</p>
+                </div> -->
+
+                <div class="text-center group">
+                    <div class="bg-orange-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-500 transition-colors duration-300">
+                        <i class="fas fa-mobile-alt text-orange-500 text-xl group-hover:text-white"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold text-gray-900 mb-2">Mobile Friendly</h4>
+                    <p class="text-gray-600 text-sm">Works perfectly on all devices and platforms</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  {% include 'footer.html' %}
+    <!-- Floating Action Button -->
+    <div class="fixed bottom-8 right-8 z-50">
+        <a href="{{ url_for('predict') }}" class="bg-gradient-to-r from-orange-500 to-red-500 text-white w-16 h-16 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-110 transition-all duration-300 animate-pulse inline-flex items-center justify-center">
+            <i class="fas fa-camera text-xl"></i>
+        </a>
+    </div>
+
+    <script>
+        // Add some interactive animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Add loading animation to buttons (but not links)
+            document.querySelectorAll('button:not([href])').forEach(button => {
+                button.addEventListener('click', function() {
+                    if (!this.classList.contains('loading')) {
+                        this.classList.add('loading');
+                        const originalText = this.innerHTML;
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Loading...';
+                        
+                        setTimeout(() => {
+                            this.classList.remove('loading');
+                            this.innerHTML = originalText;
+                        }, 2000);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

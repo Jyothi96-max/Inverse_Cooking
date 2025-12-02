@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe History - Invese Cooking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#FF6B35',
+                        'secondary': '#F7931E',
+                        'accent': '#FFE5D9'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'bounce-soft': 'bounceSoft 2s infinite',
+                        'scale-in': 'scaleIn 0.3s ease-out'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        bounceSoft: {
+                            '0%, 20%, 50%, 80%, 100%': { transform: 'translateY(0)' },
+                            '40%': { transform: 'translateY(-10px)' },
+                            '60%': { transform: 'translateY(-5px)' }
+                        },
+                        scaleIn: {
+                            '0%': { transform: 'scale(0.95)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 30%, #0f3460 70%, #533483 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-row-hover:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.01);
+        }
+
+        .score-badge {
+            background: linear-gradient(45deg, #10B981, #059669);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .food-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .food-image:hover {
+            transform: scale(1.1);
+            border-color: #FF6B35;
+        }
+
+        .empty-state {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+        }
+
+        @media (max-width: 768px) {
+            .mobile-card {
+                background: rgba(255, 255, 255, 0.2);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 16px;
+                padding: 1.5rem;
+                margin-bottom: 1rem;
+                transition: all 0.3s ease;
+            }
+
+            .mobile-card:hover {
+                background: rgba(255, 255, 255, 0.3);
+                transform: translateY(-2px);
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+
+    <!-- Main Container -->
+    <div class="min-h-screen py-8 px-4">
+        <div class="max-w-7xl mx-auto">
+            
+            <!-- Header Section -->
+            <div class="text-center mb-12 animate-fade-in">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-white/30 backdrop-blur-lg rounded-full mb-6 animate-bounce-soft">
+                    <i class="fas fa-history text-3xl text-white"></i>
+                </div>
+                <h1 class="text-4xl font-bold text-white mb-4">Recipe History</h1>
+                <p class="text-white/80 text-lg max-w-2xl mx-auto">
+                    Explore your culinary journey through all the delicious recipes you've discovered
+                </p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 animate-slide-up">
+                <div class="glass-effect rounded-2xl p-6 text-center card-hover transition-all duration-300">
+                    <div class="text-3xl font-bold text-white mb-2">{{ history|length }}</div>
+                    <div class="text-white/80">Total Recipes</div>
+                    <i class="fas fa-utensils text-primary text-2xl mt-2"></i>
+                </div>
+                <!-- <div class="glass-effect rounded-2xl p-6 text-center card-hover transition-all duration-300">
+                    <div class="text-3xl font-bold text-white mb-2">
+                        {% if history %}
+                            {{ "%.1f"|format((history|sum(attribute='score')/history|length)*100) }}%
+                        {% else %}
+                            0.0%
+                        {% endif %}
+                    </div>
+                     <div class="text-white/80">Avg Accuracy</div>
+                    <i class="fas fa-bullseye text-secondary text-2xl mt-2"></i> 
+                </div>-->
+                <div class="glass-effect rounded-2xl p-6 text-center card-hover transition-all duration-300">
+                    <div class="text-3xl font-bold text-white mb-2">
+                        {% if history %}
+                            {{ history[0].predicted_at.strftime('%b %d') if history[0].predicted_at else 'N/A' }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </div> 
+                    <div class="text-white/80">Latest Recipe</div>
+                    <i class="fas fa-calendar-alt text-accent text-2xl mt-2"></i>
+                </div>
+            </div>
+
+            {% if history %}
+            <!-- Desktop Table View -->
+            <div class="hidden md:block glass-effect rounded-2xl p-6 animate-scale-in">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-white/20">
+                                <th class="text-left py-4 px-2 text-white font-semibold">
+                                    <i class="fas fa-image mr-2 text-primary"></i>Image
+                                </th>
+                                <th class="text-left py-4 px-2 text-white font-semibold">
+                                    <i class="fas fa-utensils mr-2 text-secondary"></i>Recipe
+                                </th>
+                                <!-- <th class="text-left py-4 px-2 text-white font-semibold">
+                                    <i class="fas fa-bullseye mr-2 text-accent"></i>Accuracy
+                                </th> -->
+                                <th class="text-left py-4 px-2 text-white font-semibold">
+                                    <i class="fas fa-calendar mr-2 text-primary"></i>Date
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in history %}
+                            <tr class="table-row-hover transition-all duration-300 cursor-pointer border-b border-white/10">
+                                <td class="py-4 px-2">
+                                                                                                              <img src="{{ url_for('uploaded_file', filename=item.image_path) }}" 
+                                          alt="{{ item.food_name }}" 
+                                          class="food-image clickable-image"
+                                          data-image-src="{{ url_for('uploaded_file', filename=item.image_path) }}"
+                                          data-caption="{{ item.food_name }}">
+                                </td>
+                                <td class="py-4 px-2">
+                                    <div class="text-white font-semibold text-lg">{{ item.food_name.title() }}</div>
+                                    <!-- <div class="text-white/60 text-sm">ID: #{{ item.id }}</div> -->
+                                </td>
+                                <!-- <td class="py-4 px-2">
+                                    <span class="score-badge">
+                                        {{ "%.1f"|format(item.score * 100) }}%
+                                    </span>
+                                </td> -->
+                                <td class="py-4 px-2">
+                                    <div class="text-white">{{ item.predicted_at.strftime('%b %d, %Y') if item.predicted_at else 'N/A' }}</div>
+                                    <div class="text-white/60 text-sm">{{ item.predicted_at.strftime('%I:%M %p') if item.predicted_at else '' }}</div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Mobile Card View -->
+            <div class="block md:hidden space-y-4 animate-fade-in">
+                {% for item in history %}
+                <div class="mobile-card">
+                    <div class="flex items-start space-x-4">
+                                                 <img src="{{ url_for('uploaded_file', filename=item.image_path) }}" 
+                              alt="{{ item.food_name }}" 
+                              class="food-image flex-shrink-0 clickable-image"
+                              data-image-src="{{ url_for('uploaded_file', filename=item.image_path) }}"
+                              data-caption="{{ item.food_name }}">
+                        
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-white font-semibold text-lg mb-1">{{ item.food_name.title() }}</h3>
+                            <!-- <p class="text-white/60 text-sm mb-2">ID: #{{ item.id }}</p> -->
+                            
+                            <!-- <div class="flex items-center justify-between mb-3">
+                                <span class="score-badge">{{ "%.1f"|format(item.score * 100) }}%</span> -->
+                                <span class="text-white/80 text-sm">
+                                    {{ item.predicted_at.strftime('%b %d, %Y') if item.predicted_at else 'N/A' }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% else %}
+            <!-- Empty State -->
+            <div class="text-center py-16 animate-fade-in">
+                <div class="empty-state rounded-2xl p-12 max-w-md mx-auto">
+                    <div class="text-6xl mb-6">🍽️</div>
+                    <h3 class="text-2xl font-bold text-white mb-4">No Recipes Yet</h3>
+                    <p class="text-white/70 mb-6">Start your culinary journey by uploading your first food image!</p>
+                    <a href="{{ url_for('predict') }}" 
+                       class="inline-flex items-center bg-gradient-to-r from-primary to-secondary text-white font-semibold py-3 px-6 rounded-xl hover:from-secondary hover:to-primary transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+                        <i class="fas fa-camera mr-2"></i>Upload Recipe Image
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50" onclick="closeImageModal()">
+        <div class="max-w-4xl max-h-full p-4">
+            <div class="relative">
+                <img id="modalImage" src="" alt="" class="max-w-full max-h-full rounded-2xl">
+                <button onclick="closeImageModal()" 
+                        class="absolute top-4 right-4 bg-white/20 backdrop-blur-lg text-white p-2 rounded-full hover:bg-white/30 transition-all duration-200">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div id="modalCaption" class="absolute bottom-4 left-4 right-4 bg-black/50 backdrop-blur-lg text-white p-4 rounded-xl">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include 'footer.html' %}
+
+    <script>
+        // Open image modal
+        function openImageModal(imageSrc, caption) {
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            
+            modalImage.src = imageSrc;
+            modalImage.alt = caption;
+            modalCaption.textContent = caption;
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close image modal
+        function closeImageModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeImageModal();
+            }
+        });
+
+        // Animate table rows on scroll
+        function animateOnScroll() {
+            const rows = document.querySelectorAll('.table-row-hover');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            rows.forEach(row => {
+                row.style.opacity = '0';
+                row.style.transform = 'translateY(20px)';
+                row.style.transition = 'all 0.6s ease';
+                observer.observe(row);
+            });
+        }
+
+        // Initialize animations on load
+        document.addEventListener('DOMContentLoaded', function() {
+            animateOnScroll();
+            
+            // Add staggered animation to mobile cards
+            const mobileCards = document.querySelectorAll('.mobile-card');
+            mobileCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+            
+            // Add click event listeners for images
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('clickable-image')) {
+                    const imageSrc = e.target.getAttribute('data-image-src');
+                    const caption = e.target.getAttribute('data-caption');
+                    openImageModal(imageSrc, caption);
+                }
+            });
+        });
+
+        // Search functionality (if you want to add it later)
+        function filterRecipes(searchTerm) {
+            const rows = document.querySelectorAll('.table-row-hover, .mobile-card');
+            searchTerm = searchTerm.toLowerCase();
+            
+            rows.forEach(row => {
+                const foodName = row.querySelector('[alt]').alt.toLowerCase();
+                if (foodName.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

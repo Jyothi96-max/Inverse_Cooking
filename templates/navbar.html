@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inverse Cooking - Discover Recipes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        mark a {
+            text-decoration: none;
+            color: inherit;
+        }
+        .user-dropdown:hover .dropdown-menu {
+            display: block;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#FF6B35',
+                        'secondary': '#F7931E',
+                        'accent': '#FFE5D9'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white/95 backdrop-blur-lg shadow-lg border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo/Brand -->
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-r from-primary to-secondary p-2 rounded-xl shadow-md">
+                        <i class="fas fa-utensils text-white text-xl"></i>
+                    </div>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                        Inverse Cooking
+                    </span>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="/" class="group flex items-center space-x-2 px-4 py-2 rounded-full text-gray-700 hover:text-primary hover:bg-accent/50 transition-all duration-300 font-medium">
+                        <i class="fas fa-home text-sm group-hover:animate-pulse"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="/#features" class="group flex items-center space-x-2 px-4 py-2 rounded-full text-gray-700 hover:text-primary hover:bg-accent/50 transition-all duration-300 font-medium">
+                        <i class="fas fa-star text-sm group-hover:rotate-12 transition-transform"></i>
+                        <span>Features</span>
+                    </a>
+                    <a href="/predict" class="group flex items-center space-x-2 px-4 py-2 rounded-full text-gray-700 hover:text-primary hover:bg-accent/50 transition-all duration-300 font-medium">
+                        <i class="fas fa-camera text-sm group-hover:animate-pulse"></i>
+                        <span>Predict</span>
+                    </a>
+                    <a href="/history" class="group flex items-center space-x-2 px-4 py-2 rounded-full text-gray-700 hover:text-primary hover:bg-accent/50 transition-all duration-300 font-medium">
+                        <i class="fas fa-history text-sm group-hover:rotate-12 transition-transform"></i>
+                        <span>History</span>
+                    </a>
+                    {% if session.loggedin %}
+                    <a href="/favorites" class="group flex items-center space-x-2 px-4 py-2 rounded-full text-gray-700 hover:text-primary hover:bg-accent/50 transition-all duration-300 font-medium">
+                        <i class="fas fa-heart text-sm group-hover:scale-110 transition-transform"></i>
+                        <span>Favorites</span>
+                    </a>
+                    {% endif %}
+                </div>
+
+                <!-- User Section -->
+                <div class="flex items-center space-x-4">
+                    {% if session.loggedin %}
+                        <!-- Logged In -->
+                        <div class="relative user-dropdown">
+                            <div class="flex items-center space-x-2 cursor-pointer">
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white">
+                                    {{ session.name[0]|upper }}
+                                </div>
+                                <span class="hidden md:inline text-gray-700 font-medium">{{ session.name }}</span>
+                                <i class="fas fa-chevron-down text-xs text-gray-500"></i>
+                            </div>
+                            <div class="dropdown-menu absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden">
+                                <a href="/logout" class="block px-4 py-2 text-gray-700 hover:bg-accent/50">Logout</a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <!-- Logged Out -->
+                        <a href="/signup" class="group flex items-center space-x-2 px-4 py-2 rounded-full text-gray-700 hover:text-primary hover:bg-accent/50 transition-all duration-300 font-medium">
+                            <i class="fas fa-user-plus text-sm group-hover:rotate-12 transition-transform"></i>
+                            <span>Register</span>
+                        </a>
+                        <a href="/login" class="flex items-center space-x-2 bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-full hover:from-secondary hover:to-primary transition-all duration-300 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                            <i class="fas fa-sign-in-alt text-sm"></i>
+                            <span>Login</span>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+</body>
+</html>

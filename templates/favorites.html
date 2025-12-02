@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Favorite Recipes - Image2Recipe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#FF6B35',
+                        'secondary': '#F7931E',
+                        'accent': '#FFE5D9',
+                        'success': '#10B981',
+                        'warning': '#F59E0B'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-orange-50 via-white to-amber-50 min-h-screen">
+    
+    {% include 'navbar.html' %}
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <div class="bg-gradient-to-r from-primary to-secondary w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <i class="fas fa-heart text-white text-2xl"></i>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-3">My Favorite Recipes</h1>
+            <p class="text-lg text-gray-600">Your personal collection of loved recipes</p>
+        </div>
+
+        <!-- Favorites List -->
+        
+        {% if favorites %}
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for favorite in favorites %}
+            <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                <!-- Recipe Card Header -->
+                <div class="bg-gradient-to-r from-primary to-secondary p-6">
+                    <h3 class="text-xl font-bold text-white text-center">{{ favorite.food_name.replace('_', ' ').title() }}</h3>
+                </div>
+                
+                <!-- Recipe Card Body -->
+                <div class="p-6">
+                    <!-- Rating Display -->
+                    {% if favorite.rating %}
+                    <div class="mb-4">
+                        <!-- Overall Rating -->
+                        <div class="flex items-center justify-center mb-2">
+                            <span class="text-sm font-medium text-gray-700 mr-2">Overall:</span>
+                            <div class="flex space-x-1">
+                                {% for i in range(5) %}
+                                    {% if i < favorite.rating %}
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                    {% else %}
+                                    <i class="far fa-star text-gray-300"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <span class="ml-2 text-sm text-gray-600">({{ favorite.rating }}/5)</span>
+                        </div>
+                        
+                        <!-- Taste Rating -->
+                        {% if favorite.taste_rating %}
+                        <div class="flex items-center justify-center mb-2">
+                            <span class="text-sm font-medium text-gray-700 mr-2">Taste:</span>
+                            <div class="flex space-x-1">
+                                {% for i in range(5) %}
+                                    {% if i < favorite.taste_rating %}
+                                    <i class="fas fa-star text-orange-400"></i>
+                                    {% else %}
+                                    <i class="far fa-star text-gray-300"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <span class="ml-2 text-sm text-gray-600">({{ favorite.taste_rating }}/5)</span>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Presentation Rating -->
+                        {% if favorite.presentation_rating %}
+                        <div class="flex items-center justify-center mb-2">
+                            <span class="text-sm font-medium text-gray-700 mr-2">Presentation:</span>
+                            <div class="flex space-x-1">
+                                {% for i in range(5) %}
+                                    {% if i < favorite.presentation_rating %}
+                                    <i class="fas fa-star text-purple-400"></i>
+                                    {% else %}
+                                    <i class="far fa-star text-gray-300"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <span class="ml-2 text-sm text-gray-600">({{ favorite.presentation_rating }}/5)</span>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Cooking Experience -->
+                        {% if favorite.cooking_experience %}
+                        <div class="text-center text-sm text-gray-600 mt-2">
+                            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
+                                {{ favorite.cooking_experience.title() }} Level
+                            </span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Added Date -->
+                    <div class="text-center text-sm text-gray-500 mb-4">
+                        Added on {{ favorite.added_at.strftime('%B %d, %Y') if favorite.added_at else 'Recently' }}
+                    </div>
+                    
+                    <!-- Feedback Preview -->
+                    {% if favorite.feedback_text %}
+                    <div class="bg-gray-50 p-3 rounded-lg mb-4">
+                        <p class="text-sm text-gray-700 italic">"{{ favorite.feedback_text[:100] }}{% if favorite.feedback_text|length > 100 %}...{% endif %}"</p>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex space-x-2">
+                        <button onclick="removeFavorite('{{ favorite.food_name }}')" class="flex-1 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors text-sm">
+                            <i class="fas fa-heart-broken mr-2"></i>Remove
+                        </button>
+                        <button onclick="viewRecipe('{{ favorite.food_name }}')" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors text-sm">
+                            <i class="fas fa-eye mr-2"></i>View
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Empty State -->
+        {% else %}
+        <div class="text-center py-16">
+            <div class="bg-gray-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-heart text-gray-400 text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-2">No favorites yet</h3>
+            <p class="text-gray-500 mb-6">Start exploring recipes and add your favorites to this collection!</p>
+            <a href="{{ url_for('predict') }}" class="inline-flex items-center bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-xl font-medium hover:from-primary/90 hover:to-secondary/90 transition-all transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl">
+                <i class="fas fa-camera mr-2"></i>
+                Upload Food Image
+            </a>
+        </div>
+        {% endif %}
+        
+        <!-- Statistics -->
+        {% if favorites %}
+        <div class="mt-12 bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 p-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Your Recipe Collection Stats</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-primary">{{ favorites|length }}</div>
+                    <div class="text-sm text-gray-600">Total Favorites</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-secondary">
+                        {% set rated_count = favorites|selectattr('rating')|list|length %}
+                        {{ rated_count }}
+                    </div>
+                    <div class="text-sm text-gray-600">Rated Recipes</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-emerald-600">
+                        {% set feedback_count = favorites|selectattr('feedback_text')|list|length %}
+                        {{ feedback_count }}
+                    </div>
+                    <div class="text-sm text-gray-600">With Feedback</div>
+                </div>
+                <!-- <div class="text-center">
+                    <div class="text-3xl font-bold text-purple-600">
+                        {% set current_year = 2024 %}
+                        {% set recent_count = 0 %}
+                        {% for fav in favorites %}
+                            {% if fav.added_at and fav.added_at.year >= current_year %}
+                                {% set recent_count = recent_count + 1 %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ recent_count }} -->
+                    </div>
+                    <!-- <div class="text-sm text-gray-600">Added This Year</div> -->
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Remove from favorites
+        async function removeFavorite(foodName) {
+            if (!confirm(`Remove "${foodName}" from favorites?`)) return;
+            
+            try {
+                const response = await fetch('/toggle_favorite', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ food_name: foodName })
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    // Reload page to update the list
+                    location.reload();
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('Failed to remove from favorites');
+                console.error(error);
+            }
+        }
+        
+        // View recipe (redirect to predict page)
+        function viewRecipe(foodName) {
+            // You can implement a direct recipe view or redirect to upload page
+            alert(`To view "${foodName}" recipe, please upload a food image and we'll detect it for you!`);
+            window.location.href = '/predict';
+        }
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Results - RecipeAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#FF6B35',
+                        'secondary': '#F7931E',
+                        'accent': '#FFE5D9',
+                        'success': '#10B981',
+                        'warning': '#F59E0B'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .ingredients-box {
+            line-height: 2.5;
+        }
+        mark {
+            background-color: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        mark a {
+            color: inherit;
+            text-decoration: none;
+        }
+        .fade-in {
+            animation: fadeIn 0.8s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .ingredient-item {
+            transition: all 0.3s ease;
+        }
+        .ingredient-item:hover {
+            transform: translateX(5px);
+            background-color: #FFF7ED;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-orange-50 via-white to-amber-50 min-h-screen">
+    
+    {% include 'navbar.html' %}
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <!-- Back Button -->
+        <div class="mb-8">
+            <a href="{{ url_for('index') }}" 
+               class="inline-flex items-center space-x-2 text-primary hover:text-secondary transition-colors duration-200 font-medium">
+                <i class="fas fa-arrow-left"></i>
+                <span>Analyze Another Image</span>
+            </a>
+        </div>
+
+        <!-- Results Section -->
+        {% if prediction %}
+        <div class="fade-in">
+            <!-- Success Alert -->
+            <div class="bg-success/10 border border-success/20 rounded-2xl p-6 mb-8">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-success/20 p-2 rounded-full">
+                        <i class="fas fa-check-circle text-success text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-success">Analysis Complete!</h3>
+                        <p class="text-success/80">We've successfully identified your dish and found a matching recipe.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Results Container -->
+            <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 p-8 mb-8">
+                <!-- Recipe Header -->
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8 pb-6 border-b border-gray-200">
+                    <div>
+                        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-2">{{ prediction.recipe_name }}</h1>
+                        <p class="text-lg text-gray-600">AI-generated recipe based on your uploaded image</p>
+                    </div>
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+                        <!-- <div class="bg-success/10 text-success border border-success/20 px-4 py-2 rounded-full flex items-center space-x-2">
+                            <i class="fas fa-check-circle"></i>
+                            <span class="font-semibold">Confidence: {{ prediction.score }}</span>
+                        </div> -->
+                        <div class="bg-blue-50 text-blue-600 border border-blue-200 px-4 py-2 rounded-full flex items-center space-x-2">
+                            <i class="fas fa-clock"></i>
+                            <span class="text-sm font-medium">Just analyzed</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <!-- Left Column - Image & Quick Info -->
+                    <div class="space-y-6">
+                        <!-- Uploaded Image -->
+                        <div class="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
+                            <div class="bg-gradient-to-r from-primary to-secondary p-4">
+                                <h3 class="text-lg font-bold text-white flex items-center">
+                                    <i class="fas fa-image mr-2"></i>
+                                    Your Upload
+                                </h3>
+                            </div>
+                            <div class="relative group">
+                                <img src="{{ url_for('uploaded_file', filename=prediction.image_filename) }}" 
+                                     alt="{{ prediction.recipe_name }}" 
+                                     class="w-full h-64 object-cover cursor-pointer transition-transform duration-300 group-hover:scale-105"
+                                     onclick="openImageModal(this.src)">
+                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center">
+                                    <i class="fas fa-search-plus text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recipe Info Cards -->
+                        <div class="space-y-4">
+                            <!-- Cooking Time Card -->
+                            <div class="bg-gradient-to-r from-orange-100 to-orange-50 border border-orange-200 rounded-2xl p-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="bg-orange-500 p-2 rounded-full">
+                                        <i class="fas fa-clock text-white"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-orange-700 font-medium">Prep Time</p>
+                                        <p class="text-orange-900 font-bold">~30-45 mins</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Difficulty Level -->
+                            <div class="bg-gradient-to-r from-green-100 to-green-50 border border-green-200 rounded-2xl p-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="bg-green-500 p-2 rounded-full">
+                                        <i class="fas fa-star text-white"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-green-700 font-medium">Difficulty</p>
+                                        <p class="text-green-900 font-bold">Moderate</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Servings -->
+                            <div class="bg-gradient-to-r from-purple-100 to-purple-50 border border-purple-200 rounded-2xl p-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="bg-purple-500 p-2 rounded-full">
+                                        <i class="fas fa-users text-white"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-purple-700 font-medium">Serves</p>
+                                        <p class="text-purple-900 font-bold">4-6 people</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Nutritional Info -->
+                        <div class="bg-white rounded-3xl shadow-lg border border-gray-100">
+                            <div class="bg-gradient-to-r from-red-500 to-pink-500 p-4 rounded-t-3xl">
+                                <h3 class="text-lg font-bold text-white flex items-center">
+                                    <i class="fas fa-heartbeat mr-2"></i>
+                                    Nutritional Facts
+                                </h3>
+                            </div>
+                            <div class="p-6">
+                                <div class="space-y-4">
+                                    {{ prediction.nutritional_facts|safe }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column - Recipe Details -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <!-- Ingredients Section -->
+                        <div class="bg-white rounded-3xl shadow-lg border border-gray-100">
+                            <div class="bg-gradient-to-r from-primary to-secondary p-6 rounded-t-3xl">
+                                <h2 class="text-2xl font-bold text-white flex items-center">
+                                    <i class="fas fa-list-ul mr-3"></i>
+                                    Ingredients
+                                    <span class="ml-auto text-sm bg-white/20 px-3 py-1 rounded-full">
+                                        {{ prediction.highlighted_ingredients.count('<li>') if prediction.highlighted_ingredients else '0' }} items
+                                    </span>
+                                </h2>
+                            </div>
+                            <div class="p-6">
+                                <div class="ingredients-box space-y-3">
+                                    {% if prediction.highlighted_ingredients %}
+                                        {{ prediction.highlighted_ingredients|safe }}
+                                    {% else %}
+                                        <p class="text-gray-500 italic">Ingredients information not available.</p>
+                                    {% endif %}
+                                </div>
+                                <div class="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                                    <div class="flex items-start space-x-3">
+                                        <i class="fas fa-lightbulb text-amber-500 mt-1"></i>
+                                        <div class="text-sm">
+                                            <p class="font-medium text-amber-800 mb-1">Shopping Tip:</p>
+                                            <p class="text-amber-700">Highlighted ingredients are commonly found items that you might already have at home!</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Instructions Section -->
+                        <div class="bg-white rounded-3xl shadow-lg border border-gray-100">
+                            <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-6 rounded-t-3xl">
+                                <h2 class="text-2xl font-bold text-white flex items-center">
+                                    <i class="fas fa-list-ol mr-3"></i>
+                                    Step-by-Step Instructions
+                                    {% set instruction_count = prediction.recipe.split('\n')|select('match', '^.+$')|list|length %}
+                                    <span class="ml-auto text-sm bg-white/20 px-3 py-1 rounded-full">
+                                        {{ instruction_count }} steps
+                                    </span>
+                                </h2>
+                            </div>
+                            <div class="p-6">
+                                <div class="space-y-4">
+                                    {% for instruction in prediction.recipe.split('\n') %}
+                                    {% if instruction.strip() %}
+                                    <div class="flex items-start space-x-4 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 hover:shadow-md transition-all duration-300 group">
+                                        <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                                            {{ loop.index }}
+                                        </div>
+                                        <p class="text-gray-700 leading-relaxed pt-2">
+                                            {{ instruction.strip() }}
+                                        </p>
+                                    </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                
+                                <!-- Cooking Tips -->
+                                <div class="mt-6 p-4 bg-green-50 border border-green-200 rounded-xl">
+                                    <div class="flex items-start space-x-3">
+                                        <i class="fas fa-chef-hat text-green-500 mt-1"></i>
+                                        <div class="text-sm">
+                                            <p class="font-medium text-green-800 mb-2">Chef's Tips:</p>
+                                            <ul class="text-green-700 space-y-1 list-disc list-inside">
+                                                <li>Read through all instructions before starting</li>
+                                                <li>Prepare all ingredients beforehand (mise en place)</li>
+                                                <li>Taste and adjust seasoning as you go</li>
+                                                <li>Don't rush - good food takes time!</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Source Section -->
+                        {% if prediction.source %}
+                        <div class="bg-white rounded-3xl shadow-lg border border-gray-100 p-6">
+                            <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                                <i class="fas fa-external-link-alt text-blue-500 mr-3"></i>
+                                Recipe Source
+                            </h3>
+                            <p class="text-gray-600 mb-6">Want to explore more variations or see the original recipe? Check out the source below:</p>
+                            <a href="{{ prediction.source }}" target="_blank" 
+                               class="inline-flex items-center space-x-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-4 rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 transition-all transform hover:-translate-y-1 shadow-lg hover:shadow-2xl">
+                                <i class="fas fa-globe text-lg"></i>
+                                <span>View Original Recipe</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 mt-8 pt-6 border-t border-gray-200">
+                    <button onclick="printRecipe()" 
+                            class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 px-6 py-3 rounded-xl font-medium transition-all flex items-center justify-center space-x-2">
+                        <i class="fas fa-print"></i>
+                        <span>Print Recipe</span>
+                    </button>
+                    <button onclick="shareRecipe()" 
+                            class="flex-1 bg-green-100 hover:bg-green-200 text-green-800 px-6 py-3 rounded-xl font-medium transition-all flex items-center justify-center space-x-2">
+                        <i class="fas fa-share"></i>
+                        <span>Share Recipe</span>
+                    </button>
+                    <a href="{{ url_for('history') }}" 
+                       class="flex-1 bg-blue-100 hover:bg-blue-200 text-blue-800 px-6 py-3 rounded-xl font-medium transition-all flex items-center justify-center space-x-2">
+                        <i class="fas fa-history"></i>
+                        <span>View History</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <!-- Error State -->
+        <div class="max-w-2xl mx-auto text-center py-16">
+            <div class="bg-red-50 border border-red-200 rounded-3xl p-8">
+                <i class="fas fa-exclamation-triangle text-red-500 text-4xl mb-4"></i>
+                <h2 class="text-2xl font-bold text-red-800 mb-2">No Results Found</h2>
+                <p class="text-red-600 mb-6">There was an issue analyzing your image. Please try uploading a different image.</p>
+                <a href="{{ url_for('index') }}" 
+                   class="inline-flex items-center space-x-2 bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-xl font-medium hover:shadow-lg transition-all">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Try Again</span>
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4" onclick="closeImageModal()">
+        <div class="max-w-4xl max-h-screen relative">
+            <button onclick="closeImageModal()" class="absolute -top-4 -right-4 bg-white text-gray-800 w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors z-10">
+                <i class="fas fa-times"></i>
+            </button>
+            <img id="modalImage" src="" alt="Full size image" class="max-w-full max-h-full object-contain rounded-xl shadow-2xl">
+        </div>
+    </div>
+
+    <script>
+        // Image modal functions
+        function openImageModal(src) {
+            document.getElementById('modalImage').src = src;
+            document.getElementById('imageModal').classList.remove('hidden');
+            document.getElementById('imageModal').classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.add('hidden');
+            document.getElementById('imageModal').classList.remove('flex');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Print recipe function
+        function printRecipe() {
+            const printContent = `
+                <div style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;">
+                    <h1 style="color: #FF6B35; text-align: center; margin-bottom: 30px;">{{ prediction.recipe_name if prediction else 'Recipe' }}</h1>
+                    {% if prediction %}
+                    <div style="margin-bottom: 30px;">
+                        <h2 style="color: #333; border-bottom: 2px solid #FF6B35; padding-bottom: 10px;">Ingredients</h2>
+                        {{ prediction.highlighted_ingredients|safe if prediction.highlighted_ingredients else '<p>No ingredients available</p>' }}
+                    </div>
+                    <div style="margin-bottom: 30px;">
+                        <h2 style="color: #333; border-bottom: 2px solid #FF6B35; padding-bottom: 10px;">Instructions</h2>
+                        <ol>
+                        {% for instruction in prediction.recipe.split('\\n') %}
+                        {% if instruction.strip() %}
+                            <li style="margin-bottom: 10px; line-height: 1.5;">{{ instruction.strip() }}</li>
+                        {% endif %}
+                        {% endfor %}
+                        </ol>
+                    </div>
+                    <div>
+                        <h2 style="color: #333; border-bottom: 2px solid #FF6B35; padding-bottom: 10px;">Nutritional Information</h2>
+                        {{ prediction.nutritional_facts|safe if prediction.nutritional_facts else '<p>No nutritional information available</p>' }}
+                    </div>
+                    {% endif %}
+                </div>
+            `;
+            
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Recipe - {{ prediction.recipe_name if prediction else 'Recipe' }}</title>
+                        <style>
+                            body { margin: 0; padding: 20px; }
+                            @media print {
+                                body { margin: 0; }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        ${printContent}
+                    </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        // Share recipe function
+        function shareRecipe() {
+            if (navigator.share) {
+                navigator.share({
+                    title: '{{ prediction.recipe_name if prediction else "Recipe" }}',
+                    text: 'Check out this amazing recipe I found using RecipeAI!',
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                // Fallback: copy URL to clipboard
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    alert('Recipe URL copied to clipboard!');
+                }).catch(() => {
+                    alert('Unable to share. URL: ' + window.location.href);
+                });
+            }
+        }
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeImageModal();
+            }
+        });
+
+        // Smooth scroll to top on page load
+        window.addEventListener('load', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Add click-to-copy functionality for ingredients
+        document.addEventListener('DOMContentLoaded', function() {
+            const ingredientItems = document.querySelectorAll('.ingredients-box li');
+            ingredientItems.forEach(item => {
+                item.style.cursor = 'pointer';
+                item.title = 'Click to copy ingredient';
+                item.addEventListener('click', function() {
+                    const text = this.textContent.trim();
+                    navigator.clipboard.writeText(text).then(() => {
+                        // Show temporary feedback
+                        const originalBg = this.style.backgroundColor;
+                        this.style.backgroundColor = '#10B981';
+                        this.style.color = 'white';
+                        setTimeout(() => {
+                            this.style.backgroundColor = originalBg;
+                            this.style.color = '';
+                        }, 1000);
+                    }).catch(console.error);
+                });
+            });
+        });
+
+        // Add ingredient highlighting on hover
+        document.addEventListener('DOMContentLoaded', function() {
+            const marks = document.querySelectorAll('mark');
+            marks.forEach(mark => {
+                mark.addEventListener('mouseenter', function() {
+                    this.style.backgroundColor = '#FED7AA';
+                    this.style.transform = 'scale(1.05)';
+                });
+                mark.addEventListener('mouseleave', function() {
+                    this.style.backgroundColor = '#fff3cd';
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

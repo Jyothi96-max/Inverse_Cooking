@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Inverse Cooking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#FF6B35',
+                        'secondary': '#F7931E',
+                        'accent': '#FFE5D9'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'bounce-soft': 'bounceSoft 2s infinite',
+                        'pulse-slow': 'pulse 3s infinite'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        bounceSoft: {
+                            '0%, 20%, 50%, 80%, 100%': { transform: 'translateY(0)' },
+                            '40%': { transform: 'translateY(-10px)' },
+                            '60%': { transform: 'translateY(-5px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #FFE5D9 0%, #FFCAB0 30%, #FF6B35 70%, #E55100 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .input-focus:focus {
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+
+        .strength-meter {
+            height: 4px;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+
+    <!-- Main Container -->
+    <div class="min-h-screen flex items-center justify-center px-4 py-8">
+        <div class="w-full max-w-md">
+            
+          
+
+            <!-- Signup Form -->
+            <div class="glass-effect rounded-2xl p-8 shadow-2xl animate-slide-up">
+                <form method="POST" class="space-y-6" id="signupForm">
+                      <!-- Header Section -->
+            <div class="text-center mb-8 animate-fade-in">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-white/30 backdrop-blur-lg rounded-full mb-6 animate-bounce-soft">
+                    <i class="fas fa-user-plus text-3xl text-white"></i>
+                </div>
+                <h1 class="text-3xl font-bold text-white mb-2">Join Inverse Cooking!</h1>
+                <p class="text-white/80 text-lg">Create your account and start cooking amazing recipes</p>
+            </div>
+                    <!-- Name Field -->
+                    <div class="space-y-2">
+                        <label for="name" class="block text-sm font-semibold text-gray-700">
+                            <i class="fas fa-user mr-2 text-primary"></i>Full Name
+                        </label>
+                        <div class="relative">
+                            <input type="text" 
+                                   id="name"
+                                   name="name" 
+                                   placeholder="Enter your full name" 
+                                   required
+                                   class="w-full px-4 py-3 bg-white/50 border border-white/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all duration-300 input-focus placeholder-gray-500">
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <i id="nameIcon" class="fas fa-user text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div id="nameError" class="hidden text-red-600 text-xs mt-1">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>
+                            <span>Please enter your full name</span>
+                        </div>
+                    </div>
+
+                    <!-- Email Field -->
+                    <div class="space-y-2">
+                        <label for="email" class="block text-sm font-semibold text-gray-700">
+                            <i class="fas fa-envelope mr-2 text-primary"></i>Email Address
+                        </label>
+                        <div class="relative">
+                            <input type="email" 
+                                   id="email"
+                                   name="email" 
+                                   placeholder="Enter your email" 
+                                   required
+                                   class="w-full px-4 py-3 bg-white/50 border border-white/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all duration-300 input-focus placeholder-gray-500">
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <i id="emailIcon" class="fas fa-at text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div id="emailError" class="hidden text-red-600 text-xs mt-1">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>
+                            <span>Please enter a valid email address</span>
+                        </div>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="space-y-2">
+                        <label for="password" class="block text-sm font-semibold text-gray-700">
+                            <i class="fas fa-lock mr-2 text-primary"></i>Password
+                        </label>
+                        <div class="relative">
+                            <input type="password" 
+                                   id="password"
+                                   name="password" 
+                                   placeholder="Create a strong password" 
+                                   required
+                                   class="w-full px-4 py-3 bg-white/50 border border-white/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all duration-300 input-focus placeholder-gray-500">
+                            <button type="button" 
+                                    onclick="togglePassword('password')"
+                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-primary transition-colors">
+                                <i id="passwordToggle" class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <!-- Password Strength Meter -->
+                        <div class="mt-2">
+                            <div class="flex space-x-1 mb-2">
+                                <div id="strength1" class="strength-meter flex-1 bg-gray-200"></div>
+                                <div id="strength2" class="strength-meter flex-1 bg-gray-200"></div>
+                                <div id="strength3" class="strength-meter flex-1 bg-gray-200"></div>
+                                <div id="strength4" class="strength-meter flex-1 bg-gray-200"></div>
+                            </div>
+                            <p id="strengthText" class="text-xs text-gray-600">Password strength: <span id="strengthLevel">Enter a password</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Password Field -->
+                    <div class="space-y-2">
+                        <label for="confirmPassword" class="block text-sm font-semibold text-gray-700">
+                            <i class="fas fa-lock mr-2 text-primary"></i>Confirm Password
+                        </label>
+                        <div class="relative">
+                            <input type="password" 
+                                   id="confirmPassword"
+                                   name="confirmPassword" 
+                                   placeholder="Confirm your password" 
+                                   required
+                                   class="w-full px-4 py-3 bg-white/50 border border-white/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all duration-300 input-focus placeholder-gray-500">
+                            <button type="button" 
+                                    onclick="togglePassword('confirmPassword')"
+                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-primary transition-colors">
+                                <i id="confirmPasswordToggle" class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div id="confirmPasswordError" class="hidden text-red-600 text-xs mt-1">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>
+                            <span>Passwords do not match</span>
+                        </div>
+                    </div>
+
+                    <!-- Terms and Conditions -->
+                    <div class="flex items-start space-x-3">
+                        <input type="checkbox" 
+                               id="terms"
+                               name="terms" 
+                               required
+                               class="mt-1 w-4 h-4 text-primary bg-white/50 border-white/30 rounded focus:ring-primary/50 focus:ring-2">
+                        <label for="terms" class="text-sm text-gray-700 leading-relaxed">
+                            I agree to the 
+                            <a href="#" class="text-primary hover:text-secondary font-medium">Terms of Service</a> 
+                            and 
+                            <a href="#" class="text-primary hover:text-secondary font-medium">Privacy Policy</a>
+                        </label>
+                    </div>
+
+                    <!-- Newsletter Subscription -->
+                    <!-- <div class="flex items-center space-x-3">
+                        <input type="checkbox" 
+                               id="newsletter"
+                               name="newsletter"
+                               class="w-4 h-4 text-primary bg-white/50 border-white/30 rounded focus:ring-primary/50 focus:ring-2">
+                        <label for="newsletter" class="text-sm text-gray-700">
+                            Subscribe to our recipe newsletter (optional)
+                        </label>
+                    </div> -->
+
+                    <!-- Submit Button -->
+                    <button type="submit" 
+                            id="signupButton"
+                            class="w-full bg-gradient-to-r from-primary to-secondary text-white font-semibold py-3 px-6 rounded-xl hover:from-secondary hover:to-primary transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span id="signupText">
+                            <i class="fas fa-user-plus mr-2"></i>Create Account
+                        </span>
+                        <span id="signupLoading" class="hidden">
+                            <i class="fas fa-spinner fa-spin mr-2"></i>Creating Account...
+                        </span>
+                    </button>
+
+                    <!-- Divider -->
+                    <!-- <div class="relative my-6">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-white/30"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-2 bg-white/20 text-gray-600 rounded-full">or sign up with</span>
+                        </div>
+                    </div> -->
+
+                    <!-- Social Signup Buttons -->
+                    <!-- <div class="grid grid-cols-2 gap-3">
+                        <button type="button" 
+                                onclick="socialSignup('google')"
+                                class="flex items-center justify-center px-4 py-2 bg-white/50 border border-white/30 rounded-xl hover:bg-white/70 transition-all duration-300 group">
+                            <i class="fab fa-google text-red-500 mr-2 group-hover:scale-110 transition-transform"></i>
+                            <span class="text-gray-700 font-medium">Google</span>
+                        </button>
+                        <button type="button" 
+                                onclick="socialSignup('facebook')"
+                                class="flex items-center justify-center px-4 py-2 bg-white/50 border border-white/30 rounded-xl hover:bg-white/70 transition-all duration-300 group">
+                            <i class="fab fa-facebook text-blue-600 mr-2 group-hover:scale-110 transition-transform"></i>
+                            <span class="text-gray-700 font-medium">Facebook</span>
+                        </button>
+                    </div> -->
+                </form>
+
+                <!-- Error/Success Messages -->
+                {% if msg %}
+                <div id="messageBox" class="mt-6 p-4 rounded-xl animate-fade-in">
+                    <div class="flex items-center space-x-3">
+                        <i id="messageIcon" class="fas fa-info-circle text-lg"></i>
+                        <p id="messageText" class="font-medium">{{ msg }}</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Login Link -->
+                <div class="mt-8 text-center">
+                    <p class="text-gray-700">
+                        Already have an account? 
+                        <a href="{{ url_for('login') }}" 
+                           class="text-primary hover:text-secondary font-semibold transition-colors">
+                            Sign In
+                        </a>
+                    </p>
+                </div>
+            </div>
+
+                </div>
+    </div>
+   {% include 'footer.html' %}
+    <script>
+        // Password strength checker
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            const checks = {
+                length: password.length >= 8,
+                lowercase: /[a-z]/.test(password),
+                uppercase: /[A-Z]/.test(password),
+                numbers: /\d/.test(password),
+                special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+            };
+
+            // Count passed checks
+            Object.values(checks).forEach(check => {
+                if (check) strength++;
+            });
+
+            return {
+                score: strength,
+                checks: checks,
+                level: strength < 2 ? 'Weak' : strength < 4 ? 'Medium' : strength < 5 ? 'Strong' : 'Very Strong'
+            };
+        }
+
+        // Update password strength meter
+        function updatePasswordStrength() {
+            const password = document.getElementById('password').value;
+            const strengthResult = checkPasswordStrength(password);
+            const strengthElements = ['strength1', 'strength2', 'strength3', 'strength4'];
+            const strengthLevel = document.getElementById('strengthLevel');
+
+            // Reset all strength indicators
+            strengthElements.forEach(id => {
+                const element = document.getElementById(id);
+                element.className = 'strength-meter flex-1 bg-gray-200';
+            });
+
+            // Update strength indicators based on score
+            const colors = ['bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-green-500'];
+            for (let i = 0; i < strengthResult.score && i < 4; i++) {
+                document.getElementById(strengthElements[i]).className = `strength-meter flex-1 ${colors[Math.min(i, 3)]}`;
+            }
+
+            // Update strength text
+            strengthLevel.textContent = password.length === 0 ? 'Enter a password' : strengthResult.level;
+            strengthLevel.className = password.length === 0 ? '' : 
+                strengthResult.score < 2 ? 'text-red-600 font-medium' :
+                strengthResult.score < 4 ? 'text-orange-600 font-medium' :
+                strengthResult.score < 5 ? 'text-yellow-600 font-medium' : 'text-green-600 font-medium';
+        }
+
+        // Toggle password visibility
+        function togglePassword(fieldId) {
+            const passwordField = document.getElementById(fieldId);
+            const toggleIcon = document.getElementById(fieldId + 'Toggle');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+
+        // Validate form fields
+        function validateField(fieldId, validator, errorId, errorMessage) {
+            const field = document.getElementById(fieldId);
+            const error = document.getElementById(errorId);
+            const icon = document.getElementById(fieldId + 'Icon');
+            
+            const isValid = validator(field.value);
+            
+            if (field.value && !isValid) {
+                field.classList.add('border-red-300');
+                field.classList.remove('border-green-300');
+                error.classList.remove('hidden');
+                error.querySelector('span').textContent = errorMessage;
+                if (icon) {
+                    icon.classList.remove('fa-check', 'text-green-500');
+                    icon.classList.add('fa-times', 'text-red-500');
+                }
+            } else if (field.value && isValid) {
+                field.classList.add('border-green-300');
+                field.classList.remove('border-red-300');
+                error.classList.add('hidden');
+                if (icon) {
+                    icon.classList.remove('fa-times', 'text-red-500', 'fa-user', 'fa-at', 'text-gray-400');
+                    icon.classList.add('fa-check', 'text-green-500');
+                }
+            } else {
+                field.classList.remove('border-red-300', 'border-green-300');
+                error.classList.add('hidden');
+                if (icon) {
+                    icon.classList.remove('fa-check', 'fa-times', 'text-green-500', 'text-red-500');
+                    icon.classList.add('text-gray-400');
+                    if (fieldId === 'name') icon.classList.add('fa-user');
+                    if (fieldId === 'email') icon.classList.add('fa-at');
+                }
+            }
+            
+            return isValid;
+        }
+
+        // Validators
+        const validators = {
+            name: (value) => value.trim().length >= 2,
+            email: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+            password: (value) => checkPasswordStrength(value).score >= 3,
+            confirmPassword: (value) => value === document.getElementById('password').value
+        };
+
+        // Form validation
+        function validateForm() {
+            const nameValid = validateField('name', validators.name, 'nameError', 'Name must be at least 2 characters');
+            const emailValid = validateField('email', validators.email, 'emailError', 'Please enter a valid email address');
+            const passwordValid = validateField('password', validators.password, 'passwordError', 'Password must be strong (at least 8 characters with mixed case, numbers)');
+            const confirmPasswordValid = validateField('confirmPassword', validators.confirmPassword, 'confirmPasswordError', 'Passwords do not match');
+            const termsAccepted = document.getElementById('terms').checked;
+            
+            const signupButton = document.getElementById('signupButton');
+            signupButton.disabled = !(nameValid && emailValid && passwordValid && confirmPasswordValid && termsAccepted);
+            
+            return signupButton.disabled;
+        }
+
+        // Event listeners
+        document.getElementById('name').addEventListener('input', function() {
+            validateField('name', validators.name, 'nameError', 'Name must be at least 2 characters');
+            validateForm();
+        });
+
+        document.getElementById('email').addEventListener('input', function() {
+            validateField('email', validators.email, 'emailError', 'Please enter a valid email address');
+            validateForm();
+        });
+
+        document.getElementById('password').addEventListener('input', function() {
+            updatePasswordStrength();
+            validateField('password', validators.password, 'passwordError', 'Password must be strong');
+            
+            // Also validate confirm password if it has a value
+            const confirmPassword = document.getElementById('confirmPassword');
+            if (confirmPassword.value) {
+                validateField('confirmPassword', validators.confirmPassword, 'confirmPasswordError', 'Passwords do not match');
+            }
+            
+            validateForm();
+        });
+
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            validateField('confirmPassword', validators.confirmPassword, 'confirmPasswordError', 'Passwords do not match');
+            validateForm();
+        });
+
+        document.getElementById('terms').addEventListener('change', validateForm);
+
+        // Handle form submission
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            if (validateForm()) {
+                e.preventDefault();
+                return;
+            }
+
+            const submitButton = document.getElementById('signupButton');
+            const signupText = document.getElementById('signupText');
+            const signupLoading = document.getElementById('signupLoading');
+            
+            // Show loading state
+            signupText.classList.add('hidden');
+            signupLoading.classList.remove('hidden');
+            submitButton.disabled = true;
+            
+            // In a real app, you might want to prevent the default and handle with AJAX
+            // For now, let the form submit normally
+        });
+
+        // Social signup handlers
+        function socialSignup(provider) {
+            console.log(`Signing up with ${provider}`);
+            
+            // In a real app, redirect to OAuth provider
+            switch(provider) {
+                case 'google':
+                    // window.location.href = '/auth/google';
+                    showMessage('Google signup coming soon!', 'info');
+                    break;
+                case 'facebook':
+                    // window.location.href = '/auth/facebook';
+                    showMessage('Facebook signup coming soon!', 'info');
+                    break;
+            }
+        }
+
+        // Message display function
+        function showMessage(text, type = 'info') {
+            const messageBox = document.getElementById('messageBox') || createMessageBox();
+            const messageIcon = document.getElementById('messageIcon');
+            const messageText = document.getElementById('messageText');
+            
+            // Update message content
+            messageText.textContent = text;
+            
+            // Update styling based on type
+            messageBox.className = 'mt-6 p-4 rounded-xl animate-fade-in';
+            
+            switch(type) {
+                case 'error':
+                    messageBox.classList.add('bg-red-100', 'border', 'border-red-300', 'text-red-700');
+                    messageIcon.className = 'fas fa-exclamation-circle text-lg text-red-500';
+                    break;
+                case 'success':
+                    messageBox.classList.add('bg-green-100', 'border', 'border-green-300', 'text-green-700');
+                    messageIcon.className = 'fas fa-check-circle text-lg text-green-500';
+                    break;
+                default:
+                    messageBox.classList.add('bg-blue-100', 'border', 'border-blue-300', 'text-blue-700');
+                    messageIcon.className = 'fas fa-info-circle text-lg text-blue-500';
+            }
+            
+            messageBox.classList.remove('hidden');
+        }
+
+        // Create message box if it doesn't exist
+        function createMessageBox() {
+            const messageBox = document.createElement('div');
+            messageBox.id = 'messageBox';
+            messageBox.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <i id="messageIcon" class="fas fa-info-circle text-lg"></i>
+                    <p id="messageText" class="font-medium"></p>
+                </div>
+            `;
+            
+            const form = document.getElementById('signupForm');
+            form.parentNode.appendChild(messageBox);
+            
+            return messageBox;
+        }
+
+        // Auto-hide message after 5 seconds
+        {% if msg %}
+        setTimeout(() => {
+            const messageBox = document.getElementById('messageBox');
+            if (messageBox) {
+                messageBox.style.opacity = '0';
+                setTimeout(() => messageBox.remove(), 300);
+            }
+        }, 5000);
+
+        // Determine message type based on content
+        const messageText = '{{ msg }}';
+        if (messageText.toLowerCase().includes('error') || messageText.toLowerCase().includes('failed')) {
+            showMessage(messageText, 'error');
+        } else if (messageText.toLowerCase().includes('success') || messageText.toLowerCase().includes('created')) {
+            showMessage(messageText, 'success');
+        } else {
+            showMessage(messageText, 'info');
+        }
+        {% endif %}
+
+        // Initialize form validation on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            validateForm();
+        });
+
+        // Add password visibility toggle for confirm password field
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add missing error div for password if needed
+            const passwordField = document.getElementById('password');
+            if (!document.getElementById('passwordError')) {
+                const errorDiv = document.createElement('div');
+                errorDiv.id = 'passwordError';
+                errorDiv.className = 'hidden text-red-600 text-xs mt-1';
+                errorDiv.innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i><span>Password must be strong</span>';
+                passwordField.parentNode.appendChild(errorDiv);
+            }
+        });
+    </script>
+</body>
+</html>
