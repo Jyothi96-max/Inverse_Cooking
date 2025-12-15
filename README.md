@@ -1,4 +1,4 @@
-<img width="2454" height="88" alt="image" src="https://github.com/user-attachments/assets/b90bd470-a49a-46a3-b140-1358f7b9a14b" /><img width="2454" height="88" alt="image" src="https://github.com/user-attachments/assets/77da8d2e-2416-4aef-94ab-3cacd0f57967" /># Inverse_Cooking:Recipe generation from food images
+# Inverse_Cooking:Recipe generation from food images
 
 # Project Overview
 Inverse Cooking generates complete recipes directly from food images using AI. Users upload food photos through a Flask web app, and ResNet-50 + GPT-2 predict ingredients and step-by-step instructions. Includes user authentication, history, favorites, ratings, comments, and multilingual voice support. 
@@ -19,10 +19,15 @@ Voice Assistant: Multilingual recipe narration
 | Category         | Technologies                                                                
 
 | Backend          | Python, Flask, PyTorch, PyMySQL 
+
 | AI Models        | ResNet-50, GPT-2, spaCy, Sentence Transformers 
-| Frontend         | HTML, Tailwind CSS, JavaScript               
-| Database         | MySQL (XAMPP)                                
-| Image Processing | OpenCV, Pillow                        
+
+| Frontend         | HTML, Tailwind CSS, JavaScript      
+
+| Database         | MySQL (XAMPP)             
+
+| Image Processing | OpenCV, Pillow        
+
 | Development      | Visual Studio Code, Git    
 
 # Live Demo Screenshots
