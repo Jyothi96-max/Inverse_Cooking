@@ -75,12 +75,15 @@ Cloud deployment (AWS/Heroku) for public access
 
 # Acknowledgments
 Open-source contributors: PyTorch, Flask, Tailwind CSS, spaCy
+
 Datasets: Food-101, Recipe NLG
 # Contact
  Jyothi96-max (GitHub)
 # Star & Contribute
 ⭐ Star this repo if helpful!
+
 🐛 Found a bug? Open an issue
+
 ✨ Want to contribute? Fork and submit a PR!
 
 # Built with ❤️ for AI-powered cooking
